@@ -17,7 +17,7 @@ def quadtree_rec(img,thresh):
         for i, im in enumerate(img_arr):
             allval = im[im > -1]
             avg = sum(allval) / len(allval)
-            error = np.sum(np.power(np.subtract(allval, avg), 2))
+            error = np.sum(np.abs(np.subtract(allval, avg))) / len(allval)
             if error > large_error:
                 large_error = error
                 large_idx = i
