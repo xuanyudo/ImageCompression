@@ -11,14 +11,14 @@ def histogram(img):
 def bound(img):
     h = histogram(img)
 
-    plt.plot(h[0][:], h[1][:])
+    plt.plot(h[0][:], h[1][:]) # h[0] is color value and 1 is count
     plt.title("histogram of image")
     plt.savefig("histogram.jpg")
     zero = h[0][np.argmax(h[1])]
 
-    upper = h[0][np.argmax(h[1])]
+    upper = h[0][np.argmax(h[1])]   # highest count
     c = np.delete(h[1], np.argmax(h[1]))
-    lower = h[0][np.argmax(c)]
+    lower = h[0][np.argmax(c)]# second highest count
 
     return upper, lower, zero
 
@@ -30,7 +30,10 @@ def segment(img):
     mask = img.copy()
     min = 10000000000
     total = len(mask[mask>-1])
-    for i in range(1,256):
+    for i in range(1,256): # iterate through all possible value
+
+        # calculate within group variance
+
         left = mask[mask > i]
         left_count = len(mask[mask > i])
         right = mask[mask <= i]
@@ -42,11 +45,12 @@ def segment(img):
         var = sum(np.power(np.subtract(left,avg),2))/left_count
 
         var1 = sum(np.power(np.subtract(right,avg1),2))/right_count
-
+        # minimize within group error
         if var*left_count/total + var1*right_count/total< min:
             T = i
             min = var*left_count/total + var1*right_count/total
-    print(T)
+
+    print(T) # final threshold
     mask[mask > T] = 255
 
     mask[mask <= T] = 0

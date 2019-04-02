@@ -28,6 +28,7 @@ def compute_new_centroids(o_cluster):
     centroids = []
     empty_cluster = []
     sse_max = ([], -1)
+    #computer each clusters new center by average
     for i in o_cluster:
         if len(o_cluster[i]) != 0:
 
@@ -57,13 +58,14 @@ def add_to_cluster(K, centroids, X, feature_num):
     for x in a:
         # print(x)
         minimum = (0, 1000000)
+        # obtain closest center
         for i in range(len(centroids)):
             dist = euclidean(x, centroids[i])
 
             if dist <= minimum[1]:
                 minimum = (i + 1, dist)
-        cluster[minimum[0]].append(x)
-        labels.append(minimum[0])
+        cluster[minimum[0]].append(x)# add to cluster
+        labels.append(minimum[0]) #assign cluster index of pixel
 
     centroids_new = compute_new_centroids(cluster)
     return labels, cluster, centroids_new
@@ -94,15 +96,11 @@ def plot_quantization(centers, label, title, h, w):
 
 
 if __name__ == '__main__':
-    filename = "../data/t3.jpg"
-    k = 2
-    if len(sys.argv) == 2:
-        filename = sys.argv[1]
-    if len(sys.argv) == 3:
-        filename = sys.argv[1]
-        k = int(sys.argv[2])
+
+    filename = sys.argv[1]
+    k = int(sys.argv[2])
     img = cv2.imread(filename)
     h, w, c = img.shape
-    center1 = [list(img[np.random.randint(0, h), np.random.randint(0, w)]) for i in range(k)]
+    center1 = [list(img[np.random.randint(0, h), np.random.randint(0, w)]) for i in range(k)] # random partition
     cluster, label, centers = k_mean(k, img, 3, 20, center1)
-    plot_quantization(centers, label, "output.jpg", h, w)
+    plot_quantization(centers, label, sys.argv[3]+".jpg", h, w)
